@@ -12,7 +12,9 @@ pipeline {
         IMAGE_TAG = '1.0'
         AWS_ACCOUNT_ID = '803109508882'
         ECR_REGISTRY = '803109508882.dkr.ecr.ap-southeast-2.amazonaws.com'
-    }   
+        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk-amd64'
+        PATH = '/usr/lib/jvm/java-21-openjdk-amd64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    }
 
     stages {
 
@@ -37,7 +39,8 @@ pipeline {
             }
             post {
                 always {
-                    junit 'target/surefire-reports/*.xml'
+                   junit allowEmptyResults: true,
+                        testResults: '**/target/surefire-reports/*.xml'
                 }
             }
         }
