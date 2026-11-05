@@ -25,6 +25,34 @@ pipeline {
             }
         }
 
+        stage('Java Diagnostic') {
+            steps {
+                sh '''
+                    echo "===== JAVA ENVIRONMENT ====="
+                    echo "JAVA_HOME=$JAVA_HOME"
+                    echo "PATH=$PATH"
+
+                    echo "===== JAVA ====="
+                    which java
+                    readlink -f $(which java)
+                    java -version
+
+                    echo "===== JAVAC ====="
+                    which javac
+                    readlink -f $(which javac)
+                    javac -version
+
+                    echo "===== JAVA 21 DIRECT CHECK ====="
+                    $JAVA_HOME/bin/java -version
+                    $JAVA_HOME/bin/javac -version
+                    $JAVA_HOME/bin/javac --release 21 -version
+
+                    echo "===== MAVEN JAVA VERSION ====="
+                    ./mvnw -version
+                '''
+            }
+       }
+
         stage('Build') {
             steps {
                 echo 'Compiling the Spring Boot application'
