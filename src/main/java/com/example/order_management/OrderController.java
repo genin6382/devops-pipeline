@@ -3,9 +3,12 @@ package com.example.order_management;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/orders")
+@Tag(name = "Orders", description = "Order Management API")
 public class OrderController {
 
     private final Map<Long, Order> orders =
@@ -15,11 +18,13 @@ public class OrderController {
             new AtomicLong(1);
 
     @GetMapping
+    @Operation(summary = "Get all orders", description = "Retrieve a list of all orders")
     public List<Order> getAllOrders() {
         return new ArrayList<>(orders.values());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get order by ID", description = "Retrieve a specific order by its ID")
     public Order getOrder(@PathVariable Long id) {
         Order order = orders.get(id);
 
@@ -32,6 +37,7 @@ public class OrderController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new order", description = "Create a new order with the provided details")
     public Order createOrder(@RequestBody Order order) {
         long id = idGenerator.getAndIncrement();
 
@@ -43,6 +49,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update an existing order", description = "Update the details of an existing order by its ID")
     public Order updateOrder(
             @PathVariable Long id,
             @RequestBody Order updatedOrder) {
@@ -59,6 +66,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete an order", description = "Delete an existing order by its ID")
     public Map<String, String> deleteOrder(
             @PathVariable Long id) {
 

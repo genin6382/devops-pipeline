@@ -50,6 +50,17 @@ pipeline {
                 bat 'docker build -t order-management:1.0 .'
             }
         }
+
+        stage('Docker Push') {
+            steps {
+                echo 'Pushing the Docker image to the registry'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    bat 'docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%'
+                    bat 'docker tag order-management:1.0 your-dockerhub-username/order-management:1.0'
+                    bat 'docker push your-dockerhub-username/order-management:1.0'
+                }
+            }
+        }
     }
 
     post {

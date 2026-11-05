@@ -1,0 +1,91 @@
+# ==========================================
+# Java Core
+# ==========================================
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+hs_err_pid*
+replay_pid*
+
+# Package Files (Uncomment if you prefer not to track dependencies locally)
+# *.jar
+# *.war
+# *.nar
+# *.ear
+# *.zip
+
+# ==========================================
+# Build Tools
+# ==========================================
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+pom.xml.bak
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# Avoid ignoring the wrapper jar if you use maven wrapper
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+bin/
+.gradletasknamecache
+gradle-app.setting
+# Avoid ignoring the wrapper jar if you use gradle wrapper
+!gradle-wrapper.jar
+
+# ==========================================
+# IDEs and Editors
+# ==========================================
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.metadata/
+.classpath
+.project
+.settings/
+.factorypath
+.loadpath
+*.tmp
+*.bak
+*.swp
+local.properties
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# ==========================================
+# Operating Systems
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
