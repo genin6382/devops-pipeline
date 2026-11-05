@@ -7,6 +7,14 @@ pipeline {
         timestamps()
     }
 
+    environment {
+        AWS_REGION = 'ap-southeast-2'
+        ECR_REPOSITORY = 'devops/cia'
+        IMAGE_TAG = '1.0'
+        AWS_ACCOUNT_ID = '803109508882'
+        ECR_REGISTRY = '803109508882.dkr.ecr.ap-southeast-2.amazonaws.com'
+    }   
+
     stages {
 
         stage('Checkout') {
@@ -51,16 +59,28 @@ pipeline {
             }
         }
 
-        stage('Docker Push') {
+        stage('Docker Push to ECR') {
             steps {
-                echo 'Pushing the Docker image to the registry'
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    bat 'docker login -u %DOCKER_USERNAME% -p %DOCKER_PASSWORD%'
-                    bat 'docker tag order-management:1.0 your-dockerhub-username/order-management:1.0'
-                    bat 'docker push your-dockerhub-username/order-management:1.0'
-                }
+                echo 'Logging into Amazon ECR'
+
+                bat """
+                    aws ecr get-login-password --region %AWS_REGION% | docker login --username AWS --password-stdin %ECR_REGISTRY%
+                """
+
+                echo 'Tagging Docker image'
+
+                bat """
+                    docker tag order-management:1.0 %ECR_REGISTRY%/%ECR_REPOSITORY%:%IMAGE_TAG%
+                """
+
+                echo 'Pushing Docker image to ECR'
+
+                bat """
+                    docker push %ECR_REGISTRY%/%ECR_REPOSITORY%:%IMAGE_TAG%
+                """
             }
         }
+
     }
 
     post {
