@@ -25,33 +25,18 @@ pipeline {
             }
         }
 
-        stage('Java Diagnostic') {
+        stage('Gitleaks Scan') {
             steps {
+                echo 'Scanning repository for exposed secrets'
+
                 sh '''
-                    echo "===== JAVA ENVIRONMENT ====="
-                    echo "JAVA_HOME=$JAVA_HOME"
-                    echo "PATH=$PATH"
-
-                    echo "===== JAVA ====="
-                    which java
-                    readlink -f $(which java)
-                    java -version
-
-                    echo "===== JAVAC ====="
-                    which javac
-                    readlink -f $(which javac)
-                    javac -version
-
-                    echo "===== JAVA 21 DIRECT CHECK ====="
-                    $JAVA_HOME/bin/java -version
-                    $JAVA_HOME/bin/javac -version
-                    $JAVA_HOME/bin/javac --release 21 -version
-
-                    echo "===== MAVEN JAVA VERSION ====="
-                    ./mvnw -version
+                    docker run --rm \
+                        -v "$WORKSPACE:/path" \
+                        ghcr.io/gitleaks/gitleaks:latest \
+                        git --redact --no-banner /path
                 '''
             }
-       }
+        }
 
         stage('Build') {
             steps {
