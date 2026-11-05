@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -27,14 +26,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compiling the Spring Boot application'
-                bat 'mvnw.cmd -B -DskipTests clean compile'
+                sh './mvnw -B -DskipTests clean compile'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running unit tests'
-                bat 'mvnw.cmd -B test'
+                sh './mvnw -B test'
             }
             post {
                 always {
@@ -46,16 +45,16 @@ pipeline {
         stage('Package') {
             steps {
                 echo 'Packaging the application into a JAR'
-                bat 'mvnw.cmd -B -DskipTests package'
+                sh './mvnw -B -DskipTests package'
                 archiveArtifacts artifacts: 'target/*.jar',
-                                 fingerprint: true
+                                     fingerprint: true
             }
         }
 
         stage('Docker Build') {
             steps {
                 echo 'Building the Docker image'
-                bat 'docker build -t order-management:1.0 .'
+                sh 'docker build -t order-management:1.0 .'
             }
         }
 
@@ -63,20 +62,20 @@ pipeline {
             steps {
                 echo 'Logging into Amazon ECR'
 
-                bat """
-                    aws ecr get-login-password --region %AWS_REGION% | docker login --username AWS --password-stdin %ECR_REGISTRY%
+                sh """
+                    aws ecr get-login-password --region \$AWS_REGION | docker login --username AWS --password-stdin \$ECR_REGISTRY
                 """
 
                 echo 'Tagging Docker image'
 
-                bat """
-                    docker tag order-management:1.0 %ECR_REGISTRY%/%ECR_REPOSITORY%:%IMAGE_TAG%
+                sh """
+                    docker tag order-management:1.0 \$ECR_REGISTRY/\$ECR_REPOSITORY:\$IMAGE_TAG
                 """
 
                 echo 'Pushing Docker image to ECR'
 
-                bat """
-                    docker push %ECR_REGISTRY%/%ECR_REPOSITORY%:%IMAGE_TAG%
+                sh """
+                    docker push \$ECR_REGISTRY/\$ECR_REPOSITORY:\$IMAGE_TAG
                 """
             }
         }
