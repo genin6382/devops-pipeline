@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: order-management
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: order-management
+
+  template:
+    metadata:
+      labels:
+        app: order-management
+
+    spec:
+      containers:
+        - name: order-management
+          image: 803109508882.dkr.ecr.ap-southeast-2.amazonaws.com/devops/cia:1.0
+
+          ports:
+            - containerPort: 8080
+
+          imagePullPolicy: Always
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+
+            limits:
+              memory: "1Gi"
+              cpu: "750m"
