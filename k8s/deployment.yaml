@@ -5,11 +5,12 @@ metadata:
   name: order-management
 
 spec:
-  replicas: 1
+  replicas: 3
 
   selector:
     matchLabels:
       app: order-management
+      
 
   template:
     metadata:
