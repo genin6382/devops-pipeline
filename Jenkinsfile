@@ -109,11 +109,11 @@ pipeline {
                 echo 'Deploying with Ansible'
 
                 sh '''
-                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
+                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yaml
                 '''
             }
         }
-        
+
     }
 
     post {
