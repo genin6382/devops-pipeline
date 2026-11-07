@@ -5,6 +5,7 @@
       kubernetes.core.k8s:
         state: present
         src: "{{ item }}"
+        namespace: default
       loop: "{{ lookup('fileglob', playbook_dir + '/../k8s/*.yaml', wantlist=True) }}"
 
     - name: Restart deployment to pull the latest 1.0 image
