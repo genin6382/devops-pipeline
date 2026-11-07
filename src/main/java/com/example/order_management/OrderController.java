@@ -77,4 +77,23 @@ public class OrderController {
 
         return Map.of("message", "Order deleted");
     }
+
+    // Additional endpoint for order status management
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Update order status", description = "Update the status of an existing order by its ID")
+    public Order updateOrderStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
+
+        if (!orders.containsKey(id)) {
+            throw new NoSuchElementException(
+                    "Order not found: " + id);
+        }
+
+        Order order = orders.get(id);
+        order.setStatus(status);
+        orders.put(id, order);
+
+        return order;
+    }
 }
