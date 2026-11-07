@@ -1,0 +1,26 @@
+- name: Deploy Order Management to EKS
+  hosts: local
+  tasks:
+    - name: Apply all Kubernetes manifests in k8s/
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ item }}"
+      loop: "{{ lookup('fileglob', playbook_dir + '/../k8s/*.yaml', wantlist=True) }}"
+
+    - name: Restart deployment to pull the latest 1.0 image
+      ansible.builtin.command: kubectl rollout restart deployment/order-management
+
+    - name: Wait for rollout to finish (fails the pipeline on timeout)
+      ansible.builtin.command: kubectl rollout status deployment/order-management --timeout=180s
+
+    - name: Show deployments, pods and services
+      ansible.builtin.shell: |
+        kubectl get deployments
+        kubectl get pods -o wide
+        kubectl get services
+      register: cluster_state
+      changed_when: false
+
+    - name: Print cluster state
+      ansible.builtin.debug:
+        var: cluster_state.stdout_lines

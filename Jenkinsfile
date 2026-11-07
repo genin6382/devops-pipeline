@@ -96,7 +96,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to EKS') {
+        stage('Deploy to EKS using Ansible') {
             steps {
                 echo 'Configuring EKS access'
 
@@ -106,27 +106,14 @@ pipeline {
                         --name devops-eks
                 '''
 
-                echo 'Applying Kubernetes manifests'
+                echo 'Deploying with Ansible'
 
                 sh '''
-                    kubectl apply -f k8s/
-
-                    kubectl rollout restart deployment/order-management
-
-                    kubectl rollout status deployment/order-management \
-                        --timeout=180s
-                '''
-
-                echo 'Checking deployment'
-
-                sh '''
-                    kubectl get deployments
-                    kubectl get pods -o wide
-                    kubectl get services
+                    ansible-playbook -i ansible/inventory.ini ansible/deploy.yml
                 '''
             }
         }
-
+        
     }
 
     post {

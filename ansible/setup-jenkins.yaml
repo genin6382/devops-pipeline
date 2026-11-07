@@ -1,0 +1,21 @@
+- name: Configure Jenkins server tools
+  hosts: local
+  become: true
+  tasks:
+    - name: Install required packages
+      ansible.builtin.apt:
+        name: [docker.io, maven, openjdk-21-jdk, unzip, curl]
+        state: present
+        update_cache: true
+
+    - name: Ensure Docker is running and enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Allow jenkins user to use Docker
+      ansible.builtin.user:
+        name: jenkins
+        groups: docker
+        append: true
